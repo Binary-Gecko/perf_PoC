@@ -1,5 +1,5 @@
 ## perf event race condition PoC
-This repository demonstrates that the race condition in `perf events` we reported to the linux kernel security team is exploitable.  
+This repository demonstrates that the race condition found by Ole (@firzen14) in `perf events` reported to the linux kernel security team is exploitable.  
 The PoC gains **multiple writable pages** of UAF kernel memory when it succeeds.
 
 The **patch** for the bug can be found [here](https://lkml.org/lkml/2024/9/5/544).
