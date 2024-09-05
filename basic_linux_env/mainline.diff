@@ -1,0 +1,38 @@
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 724e6d7e128f..0192d0002d73 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -10066,11 +10066,32 @@ static int perf_swevent_init(struct perf_event *event)
+ 	return 0;
+ }
+ 
++static void *perf_swevent_setup_aux(struct perf_event *event, void **pages,
++				    int nr_pages, bool overwrite)
++{
++	void *buf;
++	if(event->attr.config == PERF_COUNT_SW_DUMMY)
++		return NULL;
++
++	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
++	if (!buf)
++		return NULL;
++
++	return buf;
++}
++
++static void perf_swevent_free_aux(void *aux)
++{
++	void *buf = aux;
++	kfree(buf);
++}
++
+ static struct pmu perf_swevent = {
+ 	.task_ctx_nr	= perf_sw_context,
+ 
+ 	.capabilities	= PERF_PMU_CAP_NO_NMI,
+-
++	.setup_aux	= perf_swevent_setup_aux,
++	.free_aux	= perf_swevent_free_aux,
+ 	.event_init	= perf_swevent_init,
+ 	.add		= perf_swevent_add,
+ 	.del		= perf_swevent_del,
